@@ -1,0 +1,90 @@
+./makeFileSystem 4 400 fileSystem.data
+./fileSystemOper fileSystem.data mkdir “/usr”
+./fileSystemOper fileSystem.data mkdir “/usr/ysa”
+./fileSystemOper fileSystem.data mkdir “/bin/ysa” --> Prints error
+./fileSystemOper fileSystem.data write “/usr/ysa/file1” linuxFile.data
+./fileSystemOper fileSystem.data write “/usr/file2” linuxFile.data
+./fileSystemOper fileSystem.data write “/file3” linuxFile.data
+./fileSystemOper fileSystem.data list “/” --> Lists 1 dir, 1 file
+./fileSystemOper fileSystem.data del “/usr/ysa/file1”
+./fileSystemOper fileSystem.data dumpe2fs
+./fileSystemOper fileSystem.data read “/usr/file2” linuxFile2.data
+cmp linuxFile2.data linuxFile.data ; --> Prints nothing
+
+*************************************************************************
+
+./makeFileSystem 1 332 fileSystem.data
+./fileSystemOper fileSystem.data mkdir "/ysa"
+./fileSystemOper fileSystem.data write "/ysa/dosya1" "linuxFile.data"
+./fileSystemOper fileSystem.data mkdir "/ysa" -->Prints error
+./fileSystemOper fileSystem.data write "/ysa/dosya1" "linuxFile.data" --> Prints error
+./fileSystemOper fileSystem.data write "/ysa/dosya2" "linuxFile.data"
+./fileSystemOper fileSystem.data write "/ysa/dosya3" "linuxFile.data"
+./fileSystemOper fileSystem.data write "/dosya4" "linuxFile.data"
+./fileSystemOper fileSystem.data write "/dosya5" "linuxFile.data"
+./fileSystemOper fileSystem.data write "/dosya6" "linuxFile.data"
+./fileSystemOper fileSystem.data list "/" --> Lists 1 dir, 3 file
+./fileSystemOper fileSystem.data dumpe2fs --> Prints additional 6 inodes for dosya1,...,6
+./fileSystemOper fileSystem.data read "/dosya6" "linuxFile2.data"
+./fileSystemOper fileSystem.data read "/ysa" "linuxFile2.data" -->Prints error
+cmp linuxFile2.data linuxFile.data ; --> Prints nothing
+./fileSystemOper fileSystem.data del "/dosya6"
+./fileSystemOper fileSystem.data del "/dosya6" --> Prints error
+./fileSystemOper fileSystem.data list "/" --> Lists 1 dir, 2 file
+./fileSystemOper fileSystem.data dumpe2fs --> Prints additional 5 inodes for dosya1,...,5
+./fileSystemOper fileSystem.data list "/ysa/" --> Lists 3 file
+./fileSystemOper fileSystem.data del "/ysa" --> Prints error
+./fileSystemOper fileSystem.data rmdir "/ysa"
+./fileSystemOper fileSystem.data rmdir "/ysa" --> Prints error
+./fileSystemOper fileSystem.data mkdir "/ysa/fatih" --> Prints error
+./fileSystemOper fileSystem.data mkdir "/ysa/fatih/selim" --> Prints error
+./fileSystemOper fileSystem.data list "/" --> Lists 2 file
+./fileSystemOper fileSystem.data dumpe2fs --> Prints additional 2 inodes for dosya4,dosya5
+
+**************************************************************************
+
+./makeFileSystem 4 800 fileSystem.data --> Prints error (overloads the inode size)
+./makeFileSystem 1 300 fileSystem.data 
+./makeFileSystem 2 300 fileSystem.data 
+./makeFileSystem 4 300 fileSystem.data 
+./makeFileSystem 8 300 fileSystem.data 
+./makeFileSystem 16 300 fileSystem.data 
+
+**************************************************************************
+
+./makeFileSystem 4 400 fileSystem.data
+./fileSystemOper fileSystem.data mkdir "/fatih"
+./fileSystemOper fileSystem.data mkdir "/fatih" --> Prints error
+./fileSystemOper fileSystem.data mkdir "/fatih/selim"
+./fileSystemOper fileSystem.data mkdir "/fatih/selim/yakar"
+./fileSystemOper fileSystem.data rmdir "/fatih/yakar" --> Prints error
+./fileSystemOper fileSystem.data rmdir "/fatih/selim/yakar"
+./fileSystemOper fileSystem.data rmdir "/fatih/selim"
+./fileSystemOper fileSystem.data list "/" --> Prints 1 dir
+./fileSystemOper fileSystem.data list "/fatih/selim/" --> Prints error
+./fileSystemOper fileSystem.data write "/fatih/dosya1" "linuxFile.data"
+./fileSystemOper fileSystem.data write "/fatih/dosya1" "linuxFile.data" --> Prints error
+./fileSystemOper fileSystem.data write "/fatih/selim/dosya2" "linuxFile.data" --> Prints error
+./fileSystemOper fileSystem.data write "/fatih/dosya2" "linuxFile.data"
+./fileSystemOper fileSystem.data list "/fatih/" --> Prints 2 file
+./fileSystemOper fileSystem.data dumpe2fs --> Prints additional 2 inode information for dosya1 and dosya2
+./fileSystemOper fileSystem.data del "/fatih/dosya1" 
+./fileSystemOper fileSystem.data del "/dosya2" --> Prints error
+./fileSystemOper fileSystem.data read "/fatih/dosya1" "LinuxFile2.data" --> Prints error 
+./fileSystemOper fileSystem.data read "/fatih/dosya2" "LinuxFile2.data"
+cmp linuxFile.data linuxFile2.data --> Prints nothing
+./fileSystemOper fileSystem.data read "/fatih" "LinuxFile2.data" --> Prints error
+./fileSystemOper fileSystem.data list "/" --> Prints 1 dir
+./fileSystemOper fileSystem.data list "/fatih/" --> Prints 1 file
+./fileSystemOper fileSystem.data dumpe2fs --> Prints additional an inode information for dosya2
+
+
+
+
+
+
+
+
+
+
+
